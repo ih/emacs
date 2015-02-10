@@ -16,13 +16,12 @@
 (require 'use-package)
 
 ;;packages used
-(use-package solarized-theme :ensure t)
-(use-package magit :ensure t)
 (use-package exec-path-from-shell :ensure t)
 (use-package elpy :ensure t)
-
-;;; magit (installed by default?)
-;;; whitespace.el?
+(use-package solarized-theme :ensure t)
+(use-package magit :ensure t)
+(use-package js2-mode :ensure t)
+(use-package blank-mode :ensure t)
 
 ; Execution related
 (require 'exec-path-from-shell)
@@ -55,21 +54,15 @@
 (global-set-key (kbd "M-O")  'select-previous-window)
 
 ; Text related
-;; visualize whitespace
+;; visualize when lines are too long
 (setq-default show-trailing-whitespace t)
-(setq-default whitespace-style '(face trailing))
+(setq-default whitespace-style '(face lines-tail))
 (setq-default whitespace-line-column 80)
 (global-whitespace-mode 1)
 
 ; make text wrap in the buffer
 (visual-line-mode 1)
 
-;;(add-hook 'prog-mode-hook #'fci-mode)
-
-; Editing related
-;; spaces instead of tabs
-(setq-default fill-column 80)
-(setq-default indent-tabs-mode -1)
 ;; no beeping
 (setq visible-bell 1)
 ;; enable mouse scrolling
@@ -96,6 +89,20 @@
 (elpy-enable)
 (elpy-use-ipython)
 ;(load-file "~/.emacs.d/epy/epy-init.el")
+
+; Javascript related
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(custom-set-variables
+ '(js2-basic-offset 2))
+
+; Editing related
+;; spaces instead of tabs
+(setq-default fill-column 80)
+(setq-default indent-tabs-mode -1)
+;; prevent emacs from replacing spaces with tabs
+;; e.g. if tab-width is 8 then js2-mode replaces 8 spaces w/ a tab
+;; there is probably a more sensible way to prevent this
+(setq-default tab-width 1000)
 
 ; Git related
 (require 'magit)
