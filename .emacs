@@ -60,9 +60,6 @@
 (setq-default whitespace-line-column 80)
 (global-whitespace-mode 1)
 
-; make text wrap in the buffer
-(visual-line-mode 1)
-
 ;; no beeping
 (setq visible-bell 1)
 ;; enable mouse scrolling
@@ -90,19 +87,21 @@
 (elpy-use-ipython)
 ;(load-file "~/.emacs.d/epy/epy-init.el")
 
+; Editing related
+;; spaces instead of tabs
+(setq-default indent-tabs-mode nil)
+;; make sure tabs get replaced with spaces
+;; clean up white space
+(add-hook 'before-save-hook (lambda ()
+                  (delete-trailing-whitespace)
+                  (untabify (point-min) (point-max))))
+
+
 ; Javascript related
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (custom-set-variables
  '(js2-basic-offset 2))
 
-; Editing related
-;; spaces instead of tabs
-(setq-default fill-column 80)
-(setq-default indent-tabs-mode -1)
-;; prevent emacs from replacing spaces with tabs
-;; e.g. if tab-width is 8 then js2-mode replaces 8 spaces w/ a tab
-;; there is probably a more sensible way to prevent this
-(setq-default tab-width 1000)
 
 ; Git related
 (require 'magit)
