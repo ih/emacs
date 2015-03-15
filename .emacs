@@ -22,6 +22,7 @@
 (use-package magit :ensure t)
 (use-package js2-mode :ensure t)
 (use-package blank-mode :ensure t)
+(use-package feature-mode :ensure t)
 
 ; Execution related
 (require 'exec-path-from-shell)
@@ -59,6 +60,8 @@
 (setq-default whitespace-style '(face lines-tail))
 (setq-default whitespace-line-column 80)
 (global-whitespace-mode 1)
+;; wrap long lines
+(visual-line-mode 1)
 
 ;; no beeping
 (setq visible-bell 1)
@@ -102,6 +105,9 @@
 (custom-set-variables
  '(js2-basic-offset 2))
 
+; Cucumber related
+(require 'feature-mode)
+(add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
 
 ; Git related
 (require 'magit)
