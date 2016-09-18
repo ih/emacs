@@ -18,11 +18,13 @@
 ;;packages used
 (use-package exec-path-from-shell :ensure t)
 (use-package elpy :ensure t)
-(use-package solarized-theme :ensure t)
+(use-package twilight-bright :ensure t)
 (use-package magit :ensure t)
 (use-package js2-mode :ensure t)
 (use-package blank-mode :ensure t)
-(use-package feature-mode :ensure t)
+(use-package web-mode :ensure t)
+(use-package flycheck :ensure t)
+(use-package ace-window :ensure t)
 
 ; Execution related
 (require 'exec-path-from-shell)
@@ -41,6 +43,9 @@
 (global-set-key (kbd "C-x m") 'rename-buffer)
 
 ;make navigation between buffers easier
+(global-set-key (kbd "M-o") 'ace-window)
+(setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+
 (defun select-next-window ()
   "Switch to the next window"
   (interactive)
@@ -51,7 +56,7 @@
   (interactive)
   (select-window (previous-window)))
 
-(global-set-key (kbd "M-o") 'select-next-window)
+(global-set-key (kbd "M-p") 'select-next-window)
 (global-set-key (kbd "M-O")  'select-previous-window)
 
 ; Text related
@@ -77,8 +82,10 @@
 
 (ido-mode 1)
 
+(global-hl-line-mode 1)
+
 ; Theme related
-(load-theme 'solarized-dark 1)
+(load-theme 'twilight-bright 1)
 
 ; Frame related
 (tool-bar-mode -1)
@@ -98,16 +105,31 @@
 (add-hook 'before-save-hook (lambda ()
                   (delete-trailing-whitespace)
                   (untabify (point-min) (point-max))))
+;; Use flycheck
+(add-hook 'after-init-hook #'global-flycheck-mode)
 
 
 ; Javascript related
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-hook 'js2-mode-hook 'flycheck-mode)
 (custom-set-variables
  '(js2-basic-offset 2))
+(setq-default flycheck-disabled-checkers
+  (append flycheck-disabled-checkers
+    '(javascript-jshint)))
+(flycheck-add-mode 'javascript-eslint 'web-mode)
 
-; Cucumber related
-(require 'feature-mode)
-(add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
+; Web-mode related
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
+(defadvice web-mode-highlight-part (around tweak-jsx activate)
+  (if (equal web-mode-content-type "jsx")
+      (let ((web-mode-enable-part-face nil))
+        ad-do-it)
+    ad-do-it))
+(setq web-mode-markup-indent-offset 2)
+(setq web-mode-css-indent-offset 2)
+(setq web-mode-code-indent-offset 2)
 
 ; Git related
 (require 'magit)
